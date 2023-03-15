@@ -8,7 +8,7 @@ import DayList from "./DayList";
 import Appointment from "./Appointment";
 import { getAppointmentsForDay, getInterview } from "helpers/selectors";
 
-export default function Application() {
+export default function Application(props) {
   const setDay = (day) => setState({ ...state, day });
 
   const [state, setState] = useState({
