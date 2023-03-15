@@ -22,4 +22,16 @@ const getInterview = (state, interview) => {
   };
 };
 
-export { getAppointmentsForDay, getInterview };
+const getInterviewersForDay = (state, day) => {
+  const newDay = state.days.find((days) => days.name === day);
+
+  if (!newDay  || !newDay.interviewers) {
+    return [];
+  }
+  const result = newDay.interviewers.map((Id) => {
+    return state.interviewers[Id];
+  });
+  return result;
+};
+
+export { getAppointmentsForDay, getInterview, getInterviewersForDay };
