@@ -8,6 +8,18 @@ const getAppointmentsForDay = (state, day) => {
     return state.appointments[Id];
   });
   return result;
-}
+};
 
-export  { getAppointmentsForDay };
+const getInterview = (state, interview) => {
+  if (!interview) {
+    return null;
+  }
+
+  const interviewerData = state.interviewers[interview.interviewer];
+  return {
+    student: interview.student,
+    interviewer: interviewerData,
+  };
+};
+
+export { getAppointmentsForDay, getInterview };
