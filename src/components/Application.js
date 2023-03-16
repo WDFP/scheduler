@@ -6,7 +6,11 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
-import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
+import {
+  getAppointmentsForDay,
+  getInterview,
+  getInterviewersForDay,
+} from "helpers/selectors";
 
 export default function Application(props) {
   const setDay = (day) => setState({ ...state, day });
@@ -18,16 +22,35 @@ export default function Application(props) {
     interviewers: {},
   });
 
+  function bookInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview },
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+    return axios.put(`/api/appointments/${id}`, appointment).then(() => {
+      setState({ ...state, appointments });
+    });
+  }
+
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const interviewers = getInterviewersForDay(state, state.day);
 
   useEffect(() => {
     Promise.all([
-    axios.get("/api/days"),
-    axios.get("/api/appointments"),
-    axios.get("/api/interviewers")
+      axios.get("/api/days"),
+      axios.get("/api/appointments"),
+      axios.get("/api/interviewers"),
     ]).then((all) => {
-      setState((prev) => ({ ...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
+      setState((prev) => ({
+        ...prev,
+        days: all[0].data,
+        appointments: all[1].data,
+        interviewers: all[2].data,
+      }));
     });
   }, []);
 
@@ -41,7 +64,7 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList days={state.days} day={state.day} setDay={setDay}  />
+          <DayList days={state.days} day={state.day} setDay={setDay} />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
@@ -52,7 +75,7 @@ export default function Application(props) {
       <section className="schedule">
         {dailyAppointments.map((appointment) => {
           const interview = getInterview(state, appointment.interview);
-          
+
           return (
             <Appointment
               key={appointment.id}
@@ -60,6 +83,7 @@ export default function Application(props) {
               time={appointment.time}
               interview={interview}
               interviewers={interviewers}
+              bookInterview={bookInterview}
               // Could use {...appointment} instead of lines 92-94
             />
           );
