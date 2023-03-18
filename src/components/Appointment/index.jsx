@@ -13,8 +13,9 @@ const EMPTY = "EMPTY";
 const SHOW = "SHOW";
 const CREATE = "CREATE";
 const SAVING = "SAVING";
-const CONFIRM ="CONFIRM";
+const CONFIRM = "CONFIRM";
 const DELETING = "DELETING";
+const EDIT = "EDIT";
 
 const Appointment = (props) => {
   const { mode, transition, back } = useVisualMode(
@@ -31,14 +32,14 @@ const Appointment = (props) => {
     props.bookInterview(props.id, interview).then(() => {
       transition(SHOW);
     });
-  } 
-  
-    function deleteInterview() {
-      transition(DELETING);
-      props.cancelInterview(props.id).then(() => {
-        transition(EMPTY)
-      });
-    }
+  }
+
+  function deleteInterview() {
+    transition(SAVING);
+    props.cancelInterview(props.id).then(() => {
+      transition(EMPTY);
+    });
+  }
 
   return (
     <>
@@ -50,22 +51,32 @@ const Appointment = (props) => {
             student={props.interview.student}
             interviewer={props.interview.interviewer}
             onDelete={() => transition(CONFIRM)}
+            onEdit={() => transition(EDIT)}
           />
         )}
         {mode === CREATE && (
           <Form
+            interview={props.interview}
             interviewers={props.interviewers}
             onCancel={back}
             onSave={save}
           />
         )}
-        {mode === SAVING && <Status message="Saving"/> }
-        {mode === DELETING && <Status message="Deleting"/> }
+        {mode === SAVING && <Status message="Saving" />}
+        {mode === DELETING && <Status message="Deleting" />}
         {mode === CONFIRM && (
           <Confirm
-          onConfirm={deleteInterview}
-          onCancel={back}
-          message="Confirm Delete?"
+            onConfirm={deleteInterview}
+            onCancel={back}
+          />
+        )}
+        {mode === EDIT && (
+          <Form
+            interviewers={props.interviewers}
+            interviewer={props.interview.interviewer}
+            student={props.interview.student}
+            onSave={save}
+            onCancel={back}
           />
         )}
       </article>
