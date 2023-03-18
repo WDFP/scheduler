@@ -34,6 +34,17 @@ function useApplicationData() {
       ...state.appointments,
       [id]: appointment,
     };
+    const updateSpotsBookInterview = (appointment, id) => {
+      if (
+        state.appointments[id].interview === null &&
+        appointment.interview !== null
+      ) {
+        const dayOfWeek = state.days.find((day) => day.name === state.day);
+        dayOfWeek.spots--;
+      }
+    };
+
+    updateSpotsBookInterview(appointment, id);
     return axios.put(`/api/appointments/${id}`, appointment).then(() => {
       setState({ ...state, appointments });
     });
@@ -50,6 +61,17 @@ function useApplicationData() {
       [id]: appointment,
     };
 
+    const updateSpotsCancelInterview = (appointment, id) => {
+      if (
+        state.appointments[id].interview !== null &&
+        appointment.interview === null
+      ) {
+        const dayOfWeek = state.days.find((day) => day.name === state.day);
+        dayOfWeek.spots++;
+      }
+    };
+
+    updateSpotsCancelInterview(appointment, id);
     return axios.delete(`/api/appointments/${id}`, appointment).then(() => {
       setState({ ...state, appointments });
     });
