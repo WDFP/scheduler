@@ -64,7 +64,7 @@ const Appointment = (props) => {
 
   return (
     <>
-      <article className="appointment">
+      <article className="appointment" data-testid="appointment" >
         <Header time={props.time} />
         {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
         {mode === SHOW && (
@@ -86,7 +86,7 @@ const Appointment = (props) => {
         {mode === SAVING && <Status message="Saving" />}
         {mode === DELETING && <Status message="Deleting" />}
         {mode === CONFIRM && (
-          <Confirm onConfirm={deleteInterview} onCancel={back} />
+          <Confirm onConfirm={deleteInterview} message="Confirm Delete" onCancel={back} />
         )}
         {mode === EDIT && (
           <Form

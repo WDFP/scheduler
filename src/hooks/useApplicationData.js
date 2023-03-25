@@ -25,6 +25,23 @@ function useApplicationData() {
     });
   }, []);
 
+  const updateSpots = (appointments) => {
+    const dayOfWeek = state.days.find((day) => day.name === state.day);
+    let counter = 0;
+    dayOfWeek.appointments.forEach((id) => {
+      if (
+        appointments[id].interview === null
+      ) {
+        counter ++;
+      }
+    })
+    const newDay = {...dayOfWeek, spots: counter};
+    const newDayArray = [...state.days];
+    newDayArray[dayOfWeek.id - 1] = newDay;
+    return newDayArray;
+  };
+
+
   function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
@@ -34,19 +51,13 @@ function useApplicationData() {
       ...state.appointments,
       [id]: appointment,
     };
-    const updateSpotsBookInterview = (appointment, id) => {
-      if (
-        state.appointments[id].interview === null &&
-        appointment.interview !== null
-      ) {
-        const dayOfWeek = state.days.find((day) => day.name === state.day);
-        dayOfWeek.spots--;
-      }
-    };
+    
 
-    updateSpotsBookInterview(appointment, id);
+    
+
+    const days = updateSpots(appointments);
     return axios.put(`/api/appointments/${id}`, appointment).then(() => {
-      setState({ ...state, appointments });
+      setState({ ...state, appointments, days });
     });
   }
 
@@ -61,19 +72,10 @@ function useApplicationData() {
       [id]: appointment,
     };
 
-    const updateSpotsCancelInterview = (appointment, id) => {
-      if (
-        state.appointments[id].interview !== null &&
-        appointment.interview === null
-      ) {
-        const dayOfWeek = state.days.find((day) => day.name === state.day);
-        dayOfWeek.spots++;
-      }
-    };
 
-    updateSpotsCancelInterview(appointment, id);
+    const days = updateSpots(appointments);
     return axios.delete(`/api/appointments/${id}`, appointment).then(() => {
-      setState({ ...state, appointments });
+      setState({ ...state, appointments, days });
     });
   }
 
