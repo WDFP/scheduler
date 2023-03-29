@@ -80,9 +80,7 @@ describe("Application", () => {
     fireEvent.click(queryByAltText(appointment, "Delete"));
 
     // 4. Check that the confirmation message is shown.
-    expect(
-      getByText(appointment, "Confirm Delete")
-    ).toBeInTheDocument();
+    expect(getByText(appointment, "Confirm Delete")).toBeInTheDocument();
 
     // 5. Click the "Confirm" button on the confirmation.
     fireEvent.click(queryByText(appointment, "Confirm"));

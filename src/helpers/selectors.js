@@ -25,7 +25,7 @@ const getInterview = (state, interview) => {
 const getInterviewersForDay = (state, day) => {
   const newDay = state.days.find((days) => days.name === day);
 
-  if (!newDay  || !newDay.interviewers) {
+  if (!newDay || !newDay.interviewers) {
     return [];
   }
   const result = newDay.interviewers.map((Id) => {

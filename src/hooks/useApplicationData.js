@@ -29,18 +29,15 @@ function useApplicationData() {
     const dayOfWeek = state.days.find((day) => day.name === state.day);
     let counter = 0;
     dayOfWeek.appointments.forEach((id) => {
-      if (
-        appointments[id].interview === null
-      ) {
-        counter ++;
+      if (appointments[id].interview === null) {
+        counter++;
       }
-    })
-    const newDay = {...dayOfWeek, spots: counter};
+    });
+    const newDay = { ...dayOfWeek, spots: counter };
     const newDayArray = [...state.days];
     newDayArray[dayOfWeek.id - 1] = newDay;
     return newDayArray;
   };
-
 
   function bookInterview(id, interview) {
     const appointment = {
@@ -51,9 +48,6 @@ function useApplicationData() {
       ...state.appointments,
       [id]: appointment,
     };
-    
-
-    
 
     const days = updateSpots(appointments);
     return axios.put(`/api/appointments/${id}`, appointment).then(() => {
@@ -72,7 +66,6 @@ function useApplicationData() {
       [id]: appointment,
     };
 
-
     const days = updateSpots(appointments);
     return axios.delete(`/api/appointments/${id}`, appointment).then(() => {
       setState({ ...state, appointments, days });
@@ -84,7 +77,7 @@ function useApplicationData() {
     bookInterview,
     cancelInterview,
     setDay,
-  }
+  };
 }
 
 export default useApplicationData;

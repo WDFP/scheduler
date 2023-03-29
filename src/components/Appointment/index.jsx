@@ -42,18 +42,6 @@ const Appointment = (props) => {
       });
   }
 
-  function deleteInterview() {
-    transition(DELETING);
-    props
-      .cancelInterview(props.id)
-      .then(() => {
-        transition(EMPTY);
-      })
-      .catch((e) => {
-        transition(ERROR_DELETE, true);
-      });
-  }
-
   function destroy(e) {
     transition(DELETING, true);
     props
@@ -64,7 +52,7 @@ const Appointment = (props) => {
 
   return (
     <>
-      <article className="appointment" data-testid="appointment" >
+      <article className="appointment" data-testid="appointment">
         <Header time={props.time} />
         {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
         {mode === SHOW && (
@@ -86,12 +74,16 @@ const Appointment = (props) => {
         {mode === SAVING && <Status message="Saving" />}
         {mode === DELETING && <Status message="Deleting" />}
         {mode === CONFIRM && (
-          <Confirm onConfirm={deleteInterview} message="Confirm Delete" onCancel={back} />
+          <Confirm
+            onConfirm={destroy}
+            message="Confirm Delete"
+            onCancel={back}
+          />
         )}
         {mode === EDIT && (
           <Form
             interviewers={props.interviewers}
-            interviewer={props.interview.interviewer}
+            interviewer={props.interview.interviewer.id}
             student={props.interview.student}
             onSave={save}
             onCancel={back}
